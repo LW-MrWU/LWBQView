@@ -1,0 +1,21 @@
+#插件版本，config文件会根据版本不同自行更新内容，勿改
+#plugin version
+#The contents of the file will be updated according to different versions
+#do not modify
+version: 1
+
+#语言配置 需重启
+#language configuration, restart server
+#zh_CN、zh_FT、en_US
+lang: zh_CN
+
+#mysql数据库支持 需重启
+#mysql database support, restart server
+mysql:
+  enable: flase
+  ip: localhost
+  port: 3306
+  user: root
+  password: 123456
+  database: lwlib
+  tablePrefix: lw_

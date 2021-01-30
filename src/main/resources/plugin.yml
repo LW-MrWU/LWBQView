@@ -1,0 +1,18 @@
+name: LWBQView
+author: LW-MrWU
+
+website: http://www.gameclub.vip
+description: LWBQView is BetonQuest task progress view plugin
+
+main: vip.gameclub.lwbqview.MainPlugin
+version: 1.0
+api-version: 1.16
+
+softdepend: [LWLib, BetonQuest]
+load: startup
+database: false
+commands:
+  lwbqview:
+    aliases: [lbv]
+    description: LWBQViewDemo prefix
+    usage: /<command> help

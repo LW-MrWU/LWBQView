@@ -1,0 +1,7 @@
+COMMAND_NO_PERMISSION: '&c您沒有權限執行該命令.'
+COMMAND_SENDERTYPE_ERROR: '&c該命令不能在此處執行.'
+SUCCESS_LOAD: '&a成功加載插件'
+FAIL_LOAD: '&c加載插件失敗'
+CONFIG_NOT_FOUND: '&b配置文件:{0} 未找到，創建一個新的文件'
+CONFIG_RELOAD_SUCCESS: '&a配置文件:{0} 重載成功.'
+CONFIG_SAVE_EXCEPTION: '&c無法保存配置文件到 {0} 異常:{1}'
