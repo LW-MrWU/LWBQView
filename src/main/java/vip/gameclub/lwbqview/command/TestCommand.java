@@ -1,5 +1,6 @@
 package vip.gameclub.lwbqview.command;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -15,6 +16,7 @@ import pl.betoncraft.betonquest.config.ConfigPackage;
 import pl.betoncraft.betonquest.database.PlayerData;
 import pl.betoncraft.betonquest.utils.LogUtils;
 import pl.betoncraft.betonquest.utils.PlayerConverter;
+import vip.gameclub.lwbqview.service.JobService;
 import vip.gameclub.lwlib.model.command.BaseCommand;
 import vip.gameclub.lwlib.model.enumModel.BaseCommandSenderType;
 import vip.gameclub.lwlib.service.plugin.BasePlugin;
@@ -37,47 +39,34 @@ public class TestCommand extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender commandSender, String[] args) {
         Player player = (Player)commandSender;
-        Inventory inv = Bukkit.createInventory(null, 54, "任务列表");
 
         final PlayerData playerData = BetonQuest.getInstance().getPlayerData(PlayerConverter.getID(player));
         final Journal journal = playerData.getJournal();
         List<Pointer> pointerList = journal.getPointers();
-        for (Pointer pointer : pointerList){
-            //String pointerStr = pointer.getPointer();
-            //System.out.println("pointerStr:"+pointerStr);
 
-            // get package and name of the pointer
-            final String[] parts = pointer.getPointer().split("\\.");
-            final String packName = parts[0];
-            final ConfigPackage pack = Config.getPackages().get(packName);
-            if (pack == null) {
+        Inventory inv = Bukkit.createInventory(null, 54, "任务列表");
+        for (Pointer pointer : pointerList){
+            String text = JobService.getInstance().getPointerText(pointer);
+            if(StringUtils.isEmpty(text)){
                 continue;
             }
-            final String pointerName = parts[1];
-            String jobName = pointerName.split("_")[0];
-            // resolve the text in player's language
-            String text;
-            if (pack.getJournal().getConfig().contains(pointerName)) {
-                text = pack.getFormattedString("journal." + pointerName);
-            } else {
-                LogUtils.getLogger().log(Level.WARNING, "No defined journal entry " + pointerName + " in package " + pack.getName());
-                text = "error";
-            }
-            System.out.println("text:"+text);
+
             // 实例化物品对象
             ItemStack itemStack = new ItemStack(Material.PAPER);
-            List<String> list = new ArrayList<>();
-            list.add(text);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(jobName);
+            itemMeta.setDisplayName(JobService.getInstance().getJobName(pointer));
+
+            List<String> list = new ArrayList<>();
+            if(text.contains("\n")){
+                for (String str : text.split("\n")){
+                    list.add(str);
+                }
+            }
             itemMeta.setLore(list);
-            itemMeta.setLocalizedName("???????");
             itemStack.setItemMeta(itemMeta);
             inv.addItem(itemStack);
         }
 
-        // 往其添加物品, 如果想指定添加的格子可以使用方法
-        // setItem(int index, ItemStack item)
         player.openInventory(inv);
         return true;
     }
@@ -106,4 +95,5 @@ public class TestCommand extends BaseCommand {
     public String getUsageHelp() {
         return null;
     }
+
 }

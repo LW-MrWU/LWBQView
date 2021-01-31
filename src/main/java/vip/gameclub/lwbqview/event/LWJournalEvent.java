@@ -120,7 +120,6 @@ public class LWJournalEvent extends QuestEvent {
         //先查找玩家所拥有的同名任务节点
         for (Pointer pointer : journal.getPointers()){
             String pointerName = pointer.getPointer();
-            System.out.println("pointerName:"+pointerName);
             if(pointerName.split("_")[0].equalsIgnoreCase(jobName)){
                 return pointerName;
             }

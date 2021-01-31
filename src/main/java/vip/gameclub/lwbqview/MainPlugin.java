@@ -1,9 +1,11 @@
 package vip.gameclub.lwbqview;
 
+import org.bukkit.Bukkit;
 import pl.betoncraft.betonquest.BetonQuest;
 import vip.gameclub.lwbqview.command.MainCommand;
 import vip.gameclub.lwbqview.config.DefaultConfig;
 import vip.gameclub.lwbqview.event.LWJournalEvent;
+import vip.gameclub.lwbqview.listener.JobSelectListener;
 import vip.gameclub.lwlib.model.enumModel.BaseSysMsgEnum;
 import vip.gameclub.lwlib.service.plugin.BasePlugin;
 
@@ -66,6 +68,8 @@ public class MainPlugin extends BasePlugin {
 
     private void initListener(){
         getBetonQuest().registerEvents("LWjournal", LWJournalEvent.class);
+
+        registerListener(new JobSelectListener());
     }
 
     public BetonQuest getBetonQuest(){
