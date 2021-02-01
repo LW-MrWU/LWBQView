@@ -20,6 +20,7 @@ import pl.betoncraft.betonquest.utils.Utils;
 import vip.gameclub.lwbqview.MainPlugin;
 import vip.gameclub.lwbqview.model.enumModel.JournalCRUDEnum;
 import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
+import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
 
 @SuppressWarnings("PMD.CommentRequired")
 public class LWJournalEvent extends QuestEvent {
@@ -71,23 +72,48 @@ public class LWJournalEvent extends QuestEvent {
             final PlayerData playerData = PlayerConverter.getPlayer(playerID) == null ? new PlayerData(playerID) : BetonQuest.getInstance().getPlayerData(playerID);
             final Journal journal = playerData.getJournal();
 
-            String oldPoint;
+            Pointer oldPoint = getPointer(journal);
+            //判断记分板是否展示了该系列任务
+            JobScoreboard jobScoreboard = JobScoreboard.getInstance(MainPlugin.getInstance().getBasePlayerService().getPlayer(playerID), LanguageEnum.JOB_TITLE.getValue());
+            boolean flag = false;
+            if(jobScoreboard.isJobContains(oldPoint)){
+                flag = true;
+            }
+
             switch (crud){
                 case ADD:
                     journal.addPointer(new Pointer(name, new Date().getTime()));
                     MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_ADD.name(), LanguageEnum.JOB_ADD.getValue(), getJobName());
+                    //TODO 新增任务自动覆盖展示记分板
                     break;
                 case UPDATE:
-                    oldPoint = getJobPointer(journal);
-                    if(StringUtils.isNotEmpty(oldPoint)){
-                        journal.removePointer(oldPoint);
+                    if(oldPoint == null){
+                        break;
                     }
-                    journal.addPointer(new Pointer(name, new Date().getTime()));
+
+                    if(StringUtils.isNotEmpty(oldPoint.getPointer())){
+                        journal.removePointer(oldPoint.getPointer());
+                        //删除记分板team
+                        if(flag){
+                            jobScoreboard.delJob(oldPoint);
+                        }
+                    }
+
+                    Pointer pointer = new Pointer(name, new Date().getTime());
+                    journal.addPointer(pointer);
+                    if(flag){
+                        jobScoreboard.addJob(pointer);
+                    }
                     MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_UPDATE.name(), LanguageEnum.JOB_UPDATE.getValue(), getJobName());
                     break;
                 case DELETE:
-                    oldPoint = getJobPointer(journal);
-                    journal.removePointer(oldPoint);
+                    if(oldPoint == null){
+                        break;
+                    }
+                    journal.removePointer(oldPoint.getPointer());
+                    if(flag){
+                        jobScoreboard.delJob(oldPoint);
+                    }
                     MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_DELETE.name(), LanguageEnum.JOB_DELETE.getValue(), getJobName());
                     break;
             }
@@ -115,16 +141,16 @@ public class LWJournalEvent extends QuestEvent {
         }));
     }
 
-    private String getJobPointer(Journal journal){
+    private Pointer getPointer(Journal journal){
         String jobName = name.split("_")[0];
         //先查找玩家所拥有的同名任务节点
         for (Pointer pointer : journal.getPointers()){
             String pointerName = pointer.getPointer();
             if(pointerName.split("_")[0].equalsIgnoreCase(jobName)){
-                return pointerName;
+                return pointer;
             }
         }
-        return "";
+        return null;
     }
 
     private String getJobName(){

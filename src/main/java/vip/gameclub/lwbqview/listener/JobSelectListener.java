@@ -16,7 +16,6 @@ import pl.betoncraft.betonquest.utils.PlayerConverter;
 import vip.gameclub.lwbqview.MainPlugin;
 import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
-import vip.gameclub.lwbqview.service.JobService;
 import vip.gameclub.lwlib.listener.BaseListener;
 
 import java.util.List;
@@ -31,9 +30,16 @@ public class JobSelectListener extends BaseListener {
 
     @EventHandler
     public void playerJoin(PlayerJoinEvent event){
-
+        //TODO 任务数据入库，玩家加入时自动展示任务列表记分板
     }
 
+    /**
+     * 玩家点击任务箱子事件
+     * @param event 1
+     * @return void
+     * @author LW-MrWU
+     * @date 2021/2/1 17:42
+     */
     @EventHandler
     public void jobInvClick(InventoryClickEvent event){
         if(event.getWhoClicked() instanceof Player == false) { return;}
@@ -69,12 +75,10 @@ public class JobSelectListener extends BaseListener {
             JobScoreboard jobScoreboard = JobScoreboard.getInstance(player, LanguageEnum.JOB_TITLE.getValue());
             if(event.isLeftClick()){
                 //左键跟踪任务
-                String text = JobService.getInstance().getPointerText(pointer);
-                String[] strs = text.split("\n");
-                jobScoreboard.addTeam(jobName, strs);
+                jobScoreboard.addJob(pointer);
             }else if(event.isRightClick()){
                 //右键取消跟踪任务
-                jobScoreboard.delTeam(jobName);
+                jobScoreboard.delJob(pointer);
             }
             event.setCancelled(true);
         }
