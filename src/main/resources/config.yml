@@ -9,13 +9,5 @@ version: 1
 #zh_CN、zh_FT、en_US
 lang: zh_CN
 
-#mysql数据库支持 需重启
-#mysql database support, restart server
-mysql:
-  enable: flase
-  ip: localhost
-  port: 3306
-  user: root
-  password: 123456
-  database: lwlib
-  tablePrefix: lw_
+#任务展示数量
+jobcount: 1

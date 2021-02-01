@@ -19,6 +19,7 @@ import pl.betoncraft.betonquest.utils.PlayerConverter;
 import pl.betoncraft.betonquest.utils.Utils;
 import vip.gameclub.lwbqview.MainPlugin;
 import vip.gameclub.lwbqview.model.enumModel.JournalCRUDEnum;
+import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 
 @SuppressWarnings("PMD.CommentRequired")
 public class LWJournalEvent extends QuestEvent {
@@ -63,7 +64,6 @@ public class LWJournalEvent extends QuestEvent {
         }
 
         if (playerID == null) {
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaa");
             if (!crud.getValue().equalsIgnoreCase("add") && name != null) {
                 removePlayersPointer();
             }
@@ -75,7 +75,7 @@ public class LWJournalEvent extends QuestEvent {
             switch (crud){
                 case ADD:
                     journal.addPointer(new Pointer(name, new Date().getTime()));
-                    MainPlugin.getInstance().getBaseMessageService().sendMessageByPlayerId(playerID, "&b新任务 &d" + getJobName() + " &b已添加");
+                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_ADD.name(), LanguageEnum.JOB_ADD.getValue(), getJobName());
                     break;
                 case UPDATE:
                     oldPoint = getJobPointer(journal);
@@ -83,12 +83,12 @@ public class LWJournalEvent extends QuestEvent {
                         journal.removePointer(oldPoint);
                     }
                     journal.addPointer(new Pointer(name, new Date().getTime()));
-                    MainPlugin.getInstance().getBaseMessageService().sendMessageByPlayerId(playerID, "&b任务 &d" + getJobName() + " &b已更新");
+                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_UPDATE.name(), LanguageEnum.JOB_UPDATE.getValue(), getJobName());
                     break;
                 case DELETE:
                     oldPoint = getJobPointer(journal);
                     journal.removePointer(oldPoint);
-                    MainPlugin.getInstance().getBaseMessageService().sendMessageByPlayerId(playerID, "&b任务 &d" + getJobName() + " &c已删除");
+                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_DELETE.name(), LanguageEnum.JOB_DELETE.getValue(), getJobName());
                     break;
             }
             journal.update();

@@ -44,7 +44,6 @@ public class JobService{
         return text;
     }
 
-
     public String getJobName(Pointer pointer){
         final String[] parts = pointer.getPointer().split("\\.");
         final String pointerName = parts[1];

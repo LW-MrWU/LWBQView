@@ -11,11 +11,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import pl.betoncraft.betonquest.BetonQuest;
 import pl.betoncraft.betonquest.Journal;
 import pl.betoncraft.betonquest.Pointer;
-import pl.betoncraft.betonquest.config.Config;
-import pl.betoncraft.betonquest.config.ConfigPackage;
 import pl.betoncraft.betonquest.database.PlayerData;
-import pl.betoncraft.betonquest.utils.LogUtils;
 import pl.betoncraft.betonquest.utils.PlayerConverter;
+import vip.gameclub.lwbqview.MainPlugin;
+import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 import vip.gameclub.lwbqview.service.JobService;
 import vip.gameclub.lwlib.model.command.BaseCommand;
 import vip.gameclub.lwlib.model.enumModel.BaseCommandSenderType;
@@ -23,7 +22,6 @@ import vip.gameclub.lwlib.service.plugin.BasePlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * TODO
@@ -44,7 +42,7 @@ public class TestCommand extends BaseCommand {
         final Journal journal = playerData.getJournal();
         List<Pointer> pointerList = journal.getPointers();
 
-        Inventory inv = Bukkit.createInventory(null, 54, "任务列表");
+        Inventory inv = Bukkit.createInventory(null, 54, MainPlugin.getInstance().getBaseStringService().chatColorCodes(LanguageEnum.JOB_TITLE.getValue()));
         for (Pointer pointer : pointerList){
             String text = JobService.getInstance().getPointerText(pointer);
             if(StringUtils.isEmpty(text)){
@@ -61,6 +59,8 @@ public class TestCommand extends BaseCommand {
                 for (String str : text.split("\n")){
                     list.add(str);
                 }
+            }else{
+                list.add(text);
             }
             itemMeta.setLore(list);
             itemStack.setItemMeta(itemMeta);
