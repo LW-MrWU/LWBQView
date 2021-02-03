@@ -3,24 +3,15 @@ package vip.gameclub.lwbqview.command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import pl.betoncraft.betonquest.BetonQuest;
-import pl.betoncraft.betonquest.Journal;
-import pl.betoncraft.betonquest.Pointer;
-import pl.betoncraft.betonquest.api.MobKillNotifier;
 import pl.betoncraft.betonquest.api.Objective;
-import pl.betoncraft.betonquest.config.ConfigPackage;
 import pl.betoncraft.betonquest.database.PlayerData;
-import pl.betoncraft.betonquest.id.ObjectiveID;
 import pl.betoncraft.betonquest.utils.PlayerConverter;
-import vip.gameclub.lwbqview.MainPlugin;
 import vip.gameclub.lwlib.model.command.BaseCommand;
 import vip.gameclub.lwlib.model.enumModel.BaseCommandSenderType;
 import vip.gameclub.lwlib.service.plugin.BasePlugin;
 import vip.gameclub.lwlib.service.utils.BasePlayerUtil;
 
-import java.io.File;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * TODO

@@ -5,7 +5,7 @@ import vip.gameclub.lwbqview.command.MainCommand;
 import vip.gameclub.lwbqview.config.DefaultConfig;
 import vip.gameclub.lwbqview.event.LWJournalEvent;
 import vip.gameclub.lwbqview.listener.JobSelectListener;
-import vip.gameclub.lwbqview.listener.objective.LWMobKillObjective;
+import vip.gameclub.lwbqview.listener.bq.BQObjectiveListener;
 import vip.gameclub.lwlib.model.enumModel.BaseSysMsgEnum;
 import vip.gameclub.lwlib.service.plugin.BasePlugin;
 
@@ -70,14 +70,12 @@ public class MainPlugin extends BasePlugin {
 
     private void initListener(){
         registerListener(new JobSelectListener());
+        registerListener(new BQObjectiveListener());
     }
 
     private void initBQCustomRegister(){
         //journal
         getBetonQuest().registerEvents("LWjournal", LWJournalEvent.class);
-
-        //objective
-        getBetonQuest().registerObjectives("LWmobkill", LWMobKillObjective.class);
     }
 
     public BetonQuest getBetonQuest(){

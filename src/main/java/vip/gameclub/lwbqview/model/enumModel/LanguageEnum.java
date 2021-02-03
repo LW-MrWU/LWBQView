@@ -10,7 +10,8 @@ public enum LanguageEnum {
     JOB_TITLE("&f任务跟踪"),
     JOB_ADD("&b新任务 &e{0} &b已添加"),
     JOB_UPDATE("&b任务 &e{0} &b已更新"),
-    JOB_DELETE("&b任务 &e{0} &c已删除");
+    JOB_DELETE("&b任务 &e{0} &c已删除"),
+    JOB_COMPLETE("&a√已完成");
 
     private String value;
 

@@ -2,7 +2,6 @@ package vip.gameclub.lwbqview.model.scoreboard;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Team;
 import pl.betoncraft.betonquest.Pointer;
 import vip.gameclub.lwbqview.MainPlugin;
 import vip.gameclub.lwbqview.util.JobUtil;
@@ -29,7 +28,7 @@ public class JobScoreboard extends BaseScoreboard {
     }
 
     public static JobScoreboard getInstance(Player player, String title){
-        jobScoreboard = MainPlugin.getInstance().getScoreBoard(player);
+        jobScoreboard = (JobScoreboard)MainPlugin.getInstance().getBaseScoreboardService().getScoreBoard(player, JobScoreboard.class);
         if(jobScoreboard == null){
             Integer count = MainPlugin.getInstance().getConfig().getInt("jobcount");
             if(count == null){
@@ -51,6 +50,7 @@ public class JobScoreboard extends BaseScoreboard {
                 String key = entry.getKey();
                 for (String str : entry.getValue()){
                     str = JobUtil.replaceVariable(getPlayer(), str);
+                    System.out.println("str:"+str);
                     //判断长度是否超过40,自动换行
                     int length = str.length();
                     if(length > 40){

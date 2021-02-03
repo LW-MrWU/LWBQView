@@ -7,13 +7,16 @@ import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.config.Config;
 import pl.betoncraft.betonquest.config.ConfigPackage;
 import pl.betoncraft.betonquest.utils.LogUtils;
-import vip.gameclub.lwbqview.model.BaseVariableUtil;
+import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
+import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
 import vip.gameclub.lwlib.service.utils.BasePlayerUtil;
+import vip.gameclub.lwlib.service.utils.BaseStringUtil;
+import vip.gameclub.lwlib.service.utils.BaseVariableUtil;
 
 import java.util.logging.Level;
 
 /**
- * TODO
+ * 任务基础方法
  *
  * @author LW-MrWU
  * @date 创建时间 2021/1/31 16:14
@@ -81,6 +84,9 @@ public class JobUtil{
                     str = BaseVariableUtil.replaceVariable(str, "_c", String.valueOf(sum-left));
                 }
             }
+            if(BaseVariableUtil.isContains(str, "_c")){
+                str = BaseStringUtil.chatColorCodes(LanguageEnum.JOB_COMPLETE.getValue());
+            }
         }
         if(BaseVariableUtil.isContains(str, "_s")){
             String playerId = BasePlayerUtil.getID(player);
@@ -89,7 +95,22 @@ public class JobUtil{
                     str = BaseVariableUtil.replaceVariable(str, "_s", objective.getDefaultDataInstruction());
                 }
             }
+            if(BaseVariableUtil.isContains(str, "_s")){
+                str = BaseStringUtil.chatColorCodes(LanguageEnum.JOB_COMPLETE.getValue());
+            }
         }
         return str;
+    }
+
+    /**
+     * 刷新任务记分板
+     * @param player 1
+     * @return void
+     * @author LW-MrWU
+     * @date 2021/2/3 16:25
+     */
+    public static void reloadJobScoreboard(Player player){
+        JobScoreboard jobScoreboard = JobScoreboard.getInstance(player, LanguageEnum.JOB_TITLE.getValue());
+        jobScoreboard.reload();
     }
 }

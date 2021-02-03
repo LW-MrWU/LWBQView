@@ -3,6 +3,7 @@ package vip.gameclub.lwbqview.listener;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryView;
@@ -73,7 +74,6 @@ public class JobSelectListener extends BaseListener {
                 return;
             }
 
-            System.out.println("playerClick:"+player.getName());
             JobScoreboard jobScoreboard = JobScoreboard.getInstance(player, LanguageEnum.JOB_TITLE.getValue());
             if(event.isLeftClick()){
                 //左键跟踪任务
