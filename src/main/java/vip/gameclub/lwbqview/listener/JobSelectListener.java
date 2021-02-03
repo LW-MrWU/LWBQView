@@ -13,10 +13,11 @@ import pl.betoncraft.betonquest.Journal;
 import pl.betoncraft.betonquest.Pointer;
 import pl.betoncraft.betonquest.database.PlayerData;
 import pl.betoncraft.betonquest.utils.PlayerConverter;
-import vip.gameclub.lwbqview.MainPlugin;
 import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
 import vip.gameclub.lwlib.listener.BaseListener;
+import vip.gameclub.lwlib.service.utils.BasePlayerUtil;
+import vip.gameclub.lwlib.service.utils.BaseStringUtil;
 
 import java.util.List;
 
@@ -46,14 +47,14 @@ public class JobSelectListener extends BaseListener {
         Player player = (Player)event.getWhoClicked();
         InventoryView inventoryView = event.getView();
         String title = inventoryView.getTitle();
-        if(StringUtils.isNotEmpty(title) && MainPlugin.getInstance().getBaseStringService().chatColorCodes(LanguageEnum.JOB_TITLE.getValue()).equalsIgnoreCase(title)){
+        if(StringUtils.isNotEmpty(title) && BaseStringUtil.chatColorCodes(LanguageEnum.JOB_TITLE.getValue()).equalsIgnoreCase(title)){
             ItemStack itemStack = event.getCurrentItem();
             if(itemStack == null){
                 return;
             }
             ItemMeta itemMeta = itemStack.getItemMeta();
             String jobName = itemMeta.getDisplayName();
-            String playerID = MainPlugin.getInstance().getBasePlayerService().getID(player);
+            String playerID = BasePlayerUtil.getID(player);
             final PlayerData playerData = PlayerConverter.getPlayer(playerID) == null ? new PlayerData(playerID) : BetonQuest.getInstance().getPlayerData(playerID);
             final Journal journal = playerData.getJournal();
 
@@ -72,6 +73,7 @@ public class JobSelectListener extends BaseListener {
                 return;
             }
 
+            System.out.println("playerClick:"+player.getName());
             JobScoreboard jobScoreboard = JobScoreboard.getInstance(player, LanguageEnum.JOB_TITLE.getValue());
             if(event.isLeftClick()){
                 //左键跟踪任务

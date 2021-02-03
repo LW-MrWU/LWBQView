@@ -2,11 +2,16 @@ package vip.gameclub.lwbqview.model.scoreboard;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Team;
 import pl.betoncraft.betonquest.Pointer;
 import vip.gameclub.lwbqview.MainPlugin;
-import vip.gameclub.lwbqview.service.JobService;
+import vip.gameclub.lwbqview.util.JobUtil;
 import vip.gameclub.lwlib.model.enumModel.BaseSysMsgEnum;
 import vip.gameclub.lwlib.model.scoreboard.BaseScoreboard;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * TODO
@@ -19,24 +24,52 @@ public class JobScoreboard extends BaseScoreboard {
 
     public JobScoreboard(Player player, String title, Integer count) {
         super(MainPlugin.getInstance(), player, title, DisplaySlot.SIDEBAR, count);
+
+        MainPlugin.getInstance().registerScoreboard(this);
     }
 
     public static JobScoreboard getInstance(Player player, String title){
-        if(!getScoreboardData().containsKey(player)){
+        jobScoreboard = MainPlugin.getInstance().getScoreBoard(player);
+        if(jobScoreboard == null){
             Integer count = MainPlugin.getInstance().getConfig().getInt("jobcount");
             if(count == null){
                 MainPlugin.getInstance().getBaseLogService().infoByLanguage(BaseSysMsgEnum.FILECONFIG_GET_ERROR.name(),BaseSysMsgEnum.FILECONFIG_GET_ERROR.getValue(), "config.yml", "jobcount");
             }
             jobScoreboard = new JobScoreboard(player, title, count);
-        }else{
-            jobScoreboard = (JobScoreboard) getScoreboardData().get(player);
         }
         return jobScoreboard;
     }
 
     @Override
     protected boolean showCustom() {
-        return false;
+        int i = 0;
+        List<Map<String, List<String>>> moduleList = getModuleList();
+        for (Map<String, List<String>> module : moduleList){
+            Iterator<Map.Entry<String, List<String>>> iterator = module.entrySet().iterator();
+            while (iterator.hasNext()){
+                Map.Entry<String, List<String>> entry = iterator.next();
+                String key = entry.getKey();
+                for (String str : entry.getValue()){
+                    str = JobUtil.replaceVariable(getPlayer(), str);
+                    //判断长度是否超过40,自动换行
+                    int length = str.length();
+                    if(length > 40){
+                        for(int n=0; n<=length/40; n++){
+                            if(n == length/40){
+                                getObjective().getScore(str.substring(n*39)).setScore(++i);
+                                break;
+                            }
+                            getObjective().getScore(str.substring(n*39, n*39+39)).setScore(++i);
+                        }
+                    }else{
+                        getObjective().getScore(str).setScore(++i);
+                    }
+                }
+                getObjective().getScore(key).setScore(++i);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -47,10 +80,13 @@ public class JobScoreboard extends BaseScoreboard {
      * @date 2021/2/1 17:36
      */
     public void addJob(Pointer pointer){
-        String jobName = JobService.getInstance().getJobName(pointer);
-        String text = JobService.getInstance().getPointerText(pointer);
-        String[] strs = text.split("\n");
-        jobScoreboard.addTeam(jobName, strs);
+        String jobName = JobUtil.getJobName(pointer);
+        String text = JobUtil.getPointerText(pointer);
+        if(text.startsWith("[") && text.endsWith("]")){
+            jobScoreboard.addModule(jobName, text.substring(1,text.length()-1).split(","));
+        }else{
+            jobScoreboard.addModule(jobName, text);
+        }
     }
 
     /**
@@ -61,8 +97,8 @@ public class JobScoreboard extends BaseScoreboard {
      * @date 2021/2/1 17:38
      */
     public void delJob(Pointer pointer){
-        String jobName = JobService.getInstance().getJobName(pointer);
-        jobScoreboard.delTeam(jobName);
+        String jobName = JobUtil.getJobName(pointer);
+        jobScoreboard.delModule(jobName);
     }
 
     /**
@@ -77,7 +113,7 @@ public class JobScoreboard extends BaseScoreboard {
             return false;
         }
 
-        String jobName = JobService.getInstance().getJobName(pointer);
+        String jobName = JobUtil.getJobName(pointer);
 
         return isContains(jobName);
     }

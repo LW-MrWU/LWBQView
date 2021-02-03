@@ -17,12 +17,12 @@ import java.util.List;
 public class MainCommand extends BaseCommand {
     public MainCommand() {
         super("lwbqview", "lbv");
+        addSubCommands(new TestCommand(), new JobCommand());
     }
 
     @Override
     public boolean onCommand(CommandSender commandSender, String[] args) {
         showHelp(commandSender, MainPlugin.getInstance());
-        addSubCommands(new TestCommand());
         return true;
     }
 

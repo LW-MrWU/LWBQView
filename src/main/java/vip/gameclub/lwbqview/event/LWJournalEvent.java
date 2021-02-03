@@ -21,6 +21,8 @@ import vip.gameclub.lwbqview.MainPlugin;
 import vip.gameclub.lwbqview.model.enumModel.JournalCRUDEnum;
 import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
+import vip.gameclub.lwbqview.util.JobUtil;
+import vip.gameclub.lwlib.service.utils.BasePlayerUtil;
 
 @SuppressWarnings("PMD.CommentRequired")
 public class LWJournalEvent extends QuestEvent {
@@ -43,11 +45,11 @@ public class LWJournalEvent extends QuestEvent {
         //判断第二参数
         String second = instruction.next();
         if(second.contains("/") || second.contains(".")){
-            MainPlugin.getInstance().getBaseLogService().warning("event.yml LWjournal "+Utils.addPackage(instruction.getPackage(), second)+" 不支持/.符号");
+            MainPlugin.getInstance().getBaseLogService().warning("journal.yml "+Utils.addPackage(instruction.getPackage(), second)+" 不支持/.符号");
             return;
         }
         if(!second.contains("_")){
-            MainPlugin.getInstance().getBaseLogService().warning("event.yml LWjournal "+Utils.addPackage(instruction.getPackage(), second)+" 节点参数格式错误,规范示例: 任务名_xxx: '任务详情'");
+            MainPlugin.getInstance().getBaseLogService().warning("journal.yml "+Utils.addPackage(instruction.getPackage(), second)+" 节点参数格式错误,规范示例: 任务名_xxx: '任务详情'");
             return;
         }
         this.name = Utils.addPackage(instruction.getPackage(), second);
@@ -74,7 +76,7 @@ public class LWJournalEvent extends QuestEvent {
 
             Pointer oldPoint = getPointer(journal);
             //判断记分板是否展示了该系列任务
-            JobScoreboard jobScoreboard = JobScoreboard.getInstance(MainPlugin.getInstance().getBasePlayerService().getPlayer(playerID), LanguageEnum.JOB_TITLE.getValue());
+            JobScoreboard jobScoreboard = JobScoreboard.getInstance(BasePlayerUtil.getPlayer(playerID), LanguageEnum.JOB_TITLE.getValue());
             boolean flag = false;
             if(jobScoreboard.isJobContains(oldPoint)){
                 flag = true;
@@ -82,8 +84,9 @@ public class LWJournalEvent extends QuestEvent {
 
             switch (crud){
                 case ADD:
-                    journal.addPointer(new Pointer(name, new Date().getTime()));
-                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_ADD.name(), LanguageEnum.JOB_ADD.getValue(), getJobName());
+                    Pointer pointerAdd = new Pointer(name, new Date().getTime());
+                    journal.addPointer(pointerAdd);
+                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_ADD.name(), LanguageEnum.JOB_ADD.getValue(), JobUtil.getJobName(pointerAdd));
                     //TODO 新增任务自动覆盖展示记分板
                     break;
                 case UPDATE:
@@ -104,7 +107,7 @@ public class LWJournalEvent extends QuestEvent {
                     if(flag){
                         jobScoreboard.addJob(pointer);
                     }
-                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_UPDATE.name(), LanguageEnum.JOB_UPDATE.getValue(), getJobName());
+                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_UPDATE.name(), LanguageEnum.JOB_UPDATE.getValue(), JobUtil.getJobName(pointer));
                     break;
                 case DELETE:
                     if(oldPoint == null){
@@ -114,7 +117,7 @@ public class LWJournalEvent extends QuestEvent {
                     if(flag){
                         jobScoreboard.delJob(oldPoint);
                     }
-                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_DELETE.name(), LanguageEnum.JOB_DELETE.getValue(), getJobName());
+                    MainPlugin.getInstance().getBaseMessageService().sendMessageByLanguagePlayerId(playerID, LanguageEnum.JOB_DELETE.name(), LanguageEnum.JOB_DELETE.getValue(), JobUtil.getJobName(oldPoint));
                     break;
             }
             journal.update();
@@ -130,7 +133,7 @@ public class LWJournalEvent extends QuestEvent {
      * @date 2021/1/30 16:19
      */
     private void removePlayersPointer(){
-        for (final Player p : MainPlugin.getInstance().getBasePlayerService().getOnlinePlayerList()) {
+        for (final Player p : BasePlayerUtil.getOnlinePlayerList()) {
             final PlayerData playerData = BetonQuest.getInstance().getPlayerData(PlayerConverter.getID(p));
             final Journal journal = playerData.getJournal();
             journal.removePointer(name);
@@ -151,10 +154,5 @@ public class LWJournalEvent extends QuestEvent {
             }
         }
         return null;
-    }
-
-    private String getJobName(){
-        String str = name.split("_")[0];
-        return str.substring(str.indexOf(".")+1);
     }
 }
