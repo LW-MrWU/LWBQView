@@ -4,7 +4,6 @@ import pl.betoncraft.betonquest.BetonQuest;
 import vip.gameclub.lwbqview.command.MainCommand;
 import vip.gameclub.lwbqview.config.DefaultConfig;
 import vip.gameclub.lwbqview.event.LWJournalEvent;
-import vip.gameclub.lwbqview.listener.JobSelectListener;
 import vip.gameclub.lwbqview.listener.bq.BQObjectiveListener;
 import vip.gameclub.lwlib.model.enumModel.BaseSysMsgEnum;
 import vip.gameclub.lwlib.service.plugin.BasePlugin;
@@ -69,7 +68,6 @@ public class MainPlugin extends BasePlugin {
     }
 
     private void initListener(){
-        registerListener(new JobSelectListener());
         registerListener(new BQObjectiveListener());
     }
 

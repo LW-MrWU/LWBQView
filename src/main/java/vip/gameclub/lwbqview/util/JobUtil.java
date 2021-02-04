@@ -72,30 +72,30 @@ public class JobUtil{
      * @date 2021/2/2 17:35
      */
     public static String replaceVariable(Player player, String str){
-        if(BaseVariableUtil.isContains(str, "_c")){
+        if(BaseVariableUtil.isContains(str, ".c")){
             String playerId = BasePlayerUtil.getID(player);
 
             for (Objective objective : BetonQuest.getInstance().getPlayerObjectives(playerId)){
                 String label = objective.getLabel();
-                String var = BaseVariableUtil.getVariable(str, "_c");
+                String var = BaseVariableUtil.getVariable(str, ".c");
                 if(label.equalsIgnoreCase(var)){
                     int left = Integer.parseInt(objective.getData(playerId));
                     int sum = Integer.parseInt(objective.getDefaultDataInstruction());
-                    str = BaseVariableUtil.replaceVariable(str, "_c", String.valueOf(sum-left));
+                    str = BaseVariableUtil.replaceVariable(str, ".c", String.valueOf(sum-left));
                 }
             }
-            if(BaseVariableUtil.isContains(str, "_c")){
+            if(BaseVariableUtil.isContains(str, ".c")){
                 str = BaseStringUtil.chatColorCodes(LanguageEnum.JOB_COMPLETE.getValue());
             }
         }
-        if(BaseVariableUtil.isContains(str, "_s")){
+        if(BaseVariableUtil.isContains(str, ".s")){
             String playerId = BasePlayerUtil.getID(player);
             for (Objective objective : BetonQuest.getInstance().getPlayerObjectives(playerId)){
-                if(objective.getLabel().equalsIgnoreCase(BaseVariableUtil.getVariable(str, "_s"))){
-                    str = BaseVariableUtil.replaceVariable(str, "_s", objective.getDefaultDataInstruction());
+                if(objective.getLabel().equalsIgnoreCase(BaseVariableUtil.getVariable(str, ".s"))){
+                    str = BaseVariableUtil.replaceVariable(str, ".s", objective.getDefaultDataInstruction());
                 }
             }
-            if(BaseVariableUtil.isContains(str, "_s")){
+            if(BaseVariableUtil.isContains(str, ".s")){
                 str = BaseStringUtil.chatColorCodes(LanguageEnum.JOB_COMPLETE.getValue());
             }
         }

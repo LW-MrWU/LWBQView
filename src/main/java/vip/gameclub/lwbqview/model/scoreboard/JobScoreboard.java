@@ -50,7 +50,6 @@ public class JobScoreboard extends BaseScoreboard {
                 String key = entry.getKey();
                 for (String str : entry.getValue()){
                     str = JobUtil.replaceVariable(getPlayer(), str);
-                    System.out.println("str:"+str);
                     //判断长度是否超过40,自动换行
                     int length = str.length();
                     if(length > 40){
