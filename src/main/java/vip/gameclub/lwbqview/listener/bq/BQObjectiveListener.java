@@ -5,9 +5,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import pl.betoncraft.betonquest.api.MobKillNotifier;
 import vip.gameclub.lwbqview.util.JobUtil;
 import vip.gameclub.lwlib.listener.BaseListener;
@@ -43,6 +45,23 @@ public class BQObjectiveListener extends BaseListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onSmelting(FurnaceExtractEvent event) {
+        JobUtil.reloadJobScoreboard(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onTaming(EntityTameEvent event) {
+        JobUtil.reloadJobScoreboard((Player) event.getOwner());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPickup(EntityPickupItemEvent event) {
+        if(event.getEntity() instanceof Player){
+            JobUtil.reloadJobScoreboard((Player) event.getEntity());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onFishCatch(PlayerFishEvent event) {
         JobUtil.reloadJobScoreboard(event.getPlayer());
     }
 

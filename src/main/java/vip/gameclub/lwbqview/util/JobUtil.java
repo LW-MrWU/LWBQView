@@ -8,9 +8,9 @@ import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.config.Config;
 import pl.betoncraft.betonquest.config.ConfigPackage;
 import pl.betoncraft.betonquest.objectives.BlockObjective;
-import pl.betoncraft.betonquest.objectives.CraftingObjective;
+import pl.betoncraft.betonquest.objectives.FishObjective;
 import pl.betoncraft.betonquest.objectives.MobKillObjective;
-import pl.betoncraft.betonquest.objectives.SmeltingObjective;
+import pl.betoncraft.betonquest.objectives.PickupObjective;
 import pl.betoncraft.betonquest.utils.LogUtils;
 import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
@@ -93,16 +93,17 @@ public class JobUtil{
                     System.out.println("count amount:"+amount);
 
                     //区分显示规则
-                    //物品破坏
                     if(objective instanceof BlockObjective){
                         if(left<0){
                             str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(-amount));
                         }
                         str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount));
-                    }else if(objective instanceof CraftingObjective || objective instanceof SmeltingObjective){
-                        str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(left));
-                    }else{
+                    }else if(objective instanceof MobKillObjective){
                         str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount));
+                    }else if(objective instanceof PickupObjective || objective instanceof FishObjective){
+                        str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount-left));
+                    }else{
+                        str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(left));
                     }
                 }
             }
@@ -122,8 +123,12 @@ public class JobUtil{
                     System.out.println("amount left:"+left);
                     int amount = StringUtils.isNotEmpty(amountStr) ? Integer.parseInt(amountStr) : 0;
                     System.out.println("amount amount:"+amount);
-
-                    str = BaseVariableUtil.replaceVariable(str, ".amount", String.valueOf(Math.abs(amount+left)));
+                    //区分显示规则
+                    if(objective instanceof PickupObjective || objective instanceof FishObjective){
+                        str = BaseVariableUtil.replaceVariable(str, ".amount", String.valueOf(Math.abs(amount)));
+                    }else{
+                        str = BaseVariableUtil.replaceVariable(str, ".amount", String.valueOf(Math.abs(amount+left)));
+                    }
                 }
             }
             if(BaseVariableUtil.isContains(str, ".amount")){
