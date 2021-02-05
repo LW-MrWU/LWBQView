@@ -1,11 +1,14 @@
 package vip.gameclub.lwbqview.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 import pl.betoncraft.betonquest.BetonQuest;
 import pl.betoncraft.betonquest.Pointer;
 import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.config.Config;
 import pl.betoncraft.betonquest.config.ConfigPackage;
+import pl.betoncraft.betonquest.objectives.BlockObjective;
+import pl.betoncraft.betonquest.objectives.MobKillObjective;
 import pl.betoncraft.betonquest.utils.LogUtils;
 import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
@@ -72,30 +75,51 @@ public class JobUtil{
      * @date 2021/2/2 17:35
      */
     public static String replaceVariable(Player player, String str){
-        if(BaseVariableUtil.isContains(str, ".c")){
+        if(BaseVariableUtil.isContains(str, ".count")){
             String playerId = BasePlayerUtil.getID(player);
-
+            String var = BaseVariableUtil.getVariable(str, ".count");
             for (Objective objective : BetonQuest.getInstance().getPlayerObjectives(playerId)){
                 String label = objective.getLabel();
-                String var = BaseVariableUtil.getVariable(str, ".c");
                 if(label.equalsIgnoreCase(var)){
-                    int left = Integer.parseInt(objective.getData(playerId));
-                    int sum = Integer.parseInt(objective.getDefaultDataInstruction());
-                    str = BaseVariableUtil.replaceVariable(str, ".c", String.valueOf(sum-left));
+                    String leftStr = objective.getProperty("left", BasePlayerUtil.getID(player));
+                    String amountStr = objective.getProperty("amount", BasePlayerUtil.getID(player));
+
+                    int left = StringUtils.isNotEmpty(leftStr) ? Integer.parseInt(leftStr) : 0;
+                    System.out.println("count left:"+left);
+                    int amount = StringUtils.isNotEmpty(amountStr) ? Integer.parseInt(amountStr) : 0;
+                    System.out.println("count amount:"+amount);
+
+                    //区分显示规则
+                    //物品破坏
+                    if(objective instanceof BlockObjective){
+                        if(left<0){
+                            str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(-amount));
+                        }
+                    }
+                    str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount));
                 }
             }
-            if(BaseVariableUtil.isContains(str, ".c")){
+            if(BaseVariableUtil.isContains(str, ".count")){
                 str = BaseStringUtil.chatColorCodes(LanguageEnum.JOB_COMPLETE.getValue());
             }
         }
-        if(BaseVariableUtil.isContains(str, ".s")){
+        if(BaseVariableUtil.isContains(str, ".amount")){
             String playerId = BasePlayerUtil.getID(player);
+            String var = BaseVariableUtil.getVariable(str, ".amount");
             for (Objective objective : BetonQuest.getInstance().getPlayerObjectives(playerId)){
-                if(objective.getLabel().equalsIgnoreCase(BaseVariableUtil.getVariable(str, ".s"))){
-                    str = BaseVariableUtil.replaceVariable(str, ".s", objective.getDefaultDataInstruction());
+                if(objective.getLabel().equalsIgnoreCase(var)){
+                    String leftStr = objective.getProperty("left", BasePlayerUtil.getID(player));
+                    String amountStr = objective.getProperty("amount", BasePlayerUtil.getID(player));
+
+                    int left = StringUtils.isNotEmpty(leftStr) ? Integer.parseInt(leftStr) : 0;
+                    System.out.println("amount left:"+left);
+                    int amount = StringUtils.isNotEmpty(amountStr) ? Integer.parseInt(amountStr) : 0;
+                    System.out.println("amount amount:"+amount);
+
+                    str = BaseVariableUtil.replaceVariable(str, ".amount", String.valueOf(Math.abs(amount+left)));
                 }
             }
-            if(BaseVariableUtil.isContains(str, ".s")){
+            if(BaseVariableUtil.isContains(str, ".amount")){
                 str = BaseStringUtil.chatColorCodes(LanguageEnum.JOB_COMPLETE.getValue());
             }
         }
