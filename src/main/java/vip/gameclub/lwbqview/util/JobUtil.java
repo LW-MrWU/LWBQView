@@ -8,7 +8,9 @@ import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.config.Config;
 import pl.betoncraft.betonquest.config.ConfigPackage;
 import pl.betoncraft.betonquest.objectives.BlockObjective;
+import pl.betoncraft.betonquest.objectives.CraftingObjective;
 import pl.betoncraft.betonquest.objectives.MobKillObjective;
+import pl.betoncraft.betonquest.objectives.SmeltingObjective;
 import pl.betoncraft.betonquest.utils.LogUtils;
 import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
@@ -75,6 +77,7 @@ public class JobUtil{
      * @date 2021/2/2 17:35
      */
     public static String replaceVariable(Player player, String str){
+        System.out.println("str:"+str);
         if(BaseVariableUtil.isContains(str, ".count")){
             String playerId = BasePlayerUtil.getID(player);
             String var = BaseVariableUtil.getVariable(str, ".count");
@@ -95,8 +98,12 @@ public class JobUtil{
                         if(left<0){
                             str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(-amount));
                         }
+                        str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount));
+                    }else if(objective instanceof CraftingObjective || objective instanceof SmeltingObjective){
+                        str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(left));
+                    }else{
+                        str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount));
                     }
-                    str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount));
                 }
             }
             if(BaseVariableUtil.isContains(str, ".count")){
