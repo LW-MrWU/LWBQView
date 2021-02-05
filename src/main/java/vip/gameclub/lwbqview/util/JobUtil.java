@@ -7,10 +7,7 @@ import pl.betoncraft.betonquest.Pointer;
 import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.config.Config;
 import pl.betoncraft.betonquest.config.ConfigPackage;
-import pl.betoncraft.betonquest.objectives.BlockObjective;
-import pl.betoncraft.betonquest.objectives.FishObjective;
-import pl.betoncraft.betonquest.objectives.MobKillObjective;
-import pl.betoncraft.betonquest.objectives.PickupObjective;
+import pl.betoncraft.betonquest.objectives.*;
 import pl.betoncraft.betonquest.utils.LogUtils;
 import vip.gameclub.lwbqview.model.enumModel.LanguageEnum;
 import vip.gameclub.lwbqview.model.scoreboard.JobScoreboard;
@@ -98,7 +95,7 @@ public class JobUtil{
                             str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(-amount));
                         }
                         str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount));
-                    }else if(objective instanceof MobKillObjective){
+                    }else if(objective instanceof MobKillObjective || objective instanceof ShearObjective || objective instanceof KillPlayerObjective){
                         str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount));
                     }else if(objective instanceof PickupObjective || objective instanceof FishObjective){
                         str = BaseVariableUtil.replaceVariable(str, ".count", String.valueOf(amount-left));
